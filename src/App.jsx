@@ -9,7 +9,7 @@ function App(){
     <div className="app">
       <Navbar />
       <div className="main">
-        <CharacterList allCharacters={allCharacters} />
+        <CharacterList allCharacters ={allCharacters} />
         <CharacterDetail/>
       </div>
     </div>

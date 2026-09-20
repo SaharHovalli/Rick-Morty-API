@@ -1,5 +1,6 @@
 import { ArrowUpCircleIcon } from "@heroicons/react/24/outline"
-import {character, episodes} from "../../data/data"
+import {allCharacters, character, episodes} from "../../data/data"
+import { useState } from "react"
 
 
 export default function CharacterDetail() {

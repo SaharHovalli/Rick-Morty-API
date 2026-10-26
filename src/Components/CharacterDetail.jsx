@@ -9,6 +9,7 @@ import {toast} from 'react-hot-toast'
 export default function CharacterDetail({SelectedId}) {
 const[character ,setcharacter]=useState(null);
 const [isLoading,setisLoading]=useState(false);
+const [episodes,setEpisodes]=useState([]);
 
 useEffect(()=> {
   async function fetchData() {
@@ -18,6 +19,11 @@ useEffect(()=> {
     const{data}=await axios.get(
     `https://rickandmortyapi.com/api/character/${SelectedId}`
     );
+    const episodesID = data.episode.map((e)=>e.split("/").at(-1));
+    const{data:episodeData}=await axios.get(
+    `https://rickandmortyapi.com/api/episode/${episodesID}`
+    );
+    setEpisodes([episodeData].flat());
     setcharacter(data);
   } catch(error){
     toast.error(error.response.data.error)

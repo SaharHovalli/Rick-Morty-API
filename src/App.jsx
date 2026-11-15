@@ -2,9 +2,9 @@ import { use, useEffect, useState } from "react";
 import {allCharacters} from "../data/data" 
 import "./App.css";
 import Navbar from "./Components/Navbar";
+import { Favorite } from "./Components/Navbar";
 import CharacterDetail from "./Components/CharacterDetail";
 import CharacterList from "./Components/CharacterList";
-import Loader from "./Components/Loader";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
@@ -13,6 +13,7 @@ function App(){
   const [isLoading , setIsLoading]=useState(false);
   const [query , setQuery]=useState('');
   const [SelectedId,setSelectedId]=useState(null);
+  const [favorites,setFavorites]=useState([]);
 
 
 useEffect(() => {
@@ -49,15 +50,20 @@ useEffect(() => {
 
 const handleSelectCharacter =(id)=>{
   setSelectedId(prevId => prevId ===id ? null:id);
-};
+}; 
 
 
   return(
     <div className="app">
     <Toaster />
-      <Navbar NumOfResult={characters.length} query={query} setQuery={setQuery} />
+      <Navbar 
+      NumOfResult={characters.length}
+       query={query}
+        setQuery={setQuery}>
+        <Favorite/>
+        </Navbar> 
+        
       <Main>
-     
            <CharacterList 
            SelectedId={SelectedId}
            characters ={characters} 

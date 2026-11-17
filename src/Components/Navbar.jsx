@@ -13,12 +13,13 @@ function Navbar({NumOfResult , query , setQuery,children}) {
 
 export default Navbar;
 
-export function Favorite(){ 
+export function Favorite({NumOfFaves}){ 
   return(  <button className="heart">
     <HeartIcon className="icon"/>
-    <span className="badge">4</span>
+    <span className="badge">{NumOfFaves}</span>
   </button>)
 
 }
 
 
+ 

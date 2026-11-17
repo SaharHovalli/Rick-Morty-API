@@ -1,5 +1,4 @@
-import { use, useEffect, useState } from "react";
-import {allCharacters} from "../data/data" 
+import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import { Favorite } from "./Components/Navbar";
@@ -13,8 +12,10 @@ function App(){
   const [isLoading , setIsLoading]=useState(false);
   const [query , setQuery]=useState('');
   const [SelectedId,setSelectedId]=useState(null);
-  const [favorites,setFavorites]=useState([]);
-
+  const [favorites, setFavorites] = useState(() => {
+  const saved = localStorage.getItem("favorites");
+  return saved ? JSON.parse(saved) : [];
+});
 
 useEffect(() => {
   const timeout = setTimeout(() => {
@@ -46,11 +47,24 @@ useEffect(() => {
   return () => clearTimeout(timeout);
 }, [query]);
 
+useEffect(() => {
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}, [favorites]);
 
 
 const handleSelectCharacter =(id)=>{
   setSelectedId(prevId => prevId ===id ? null:id);
 }; 
+
+const handleonAddFavorite = (char) => {
+  setFavorites((prevFav) =>
+    prevFav.some((fav) => fav.id === char.id)
+      ? prevFav.filter((fav) => fav.id !== char.id)
+      : [...prevFav, char]
+  );
+};
+
+const isAddToFavorite=favorites.map((fav)=> fav.id).includes(SelectedId);
 
 
   return(
@@ -60,16 +74,22 @@ const handleSelectCharacter =(id)=>{
       NumOfResult={characters.length}
        query={query}
         setQuery={setQuery}>
-        <Favorite/>
+        <Favorite NumOfFaves={favorites.length}/>
         </Navbar> 
         
-      <Main>
-           <CharacterList 
+      <Main> 
+        <CharacterList
+  SelectedId={SelectedId}
+  characters={characters}
+  isLoading={isLoading}
+  onSelectCharacter={handleSelectCharacter}
+  favorites={favorites}
+  onAddFavorite={handleonAddFavorite}
+/>
+           <CharacterDetail 
            SelectedId={SelectedId}
-           characters ={characters} 
-           isLoading={isLoading} 
-           onSelectCharacter={handleSelectCharacter}/>
-           <CharacterDetail SelectedId={SelectedId} />
+            onAddFavorite={handleonAddFavorite}
+            isAddToFavorite={isAddToFavorite} />
           
         </Main>
     </div>

@@ -225,3 +225,36 @@
     flex-direction: row;
   }
 }
+
+/* Character card actions */
+
+.list__item .actions {
+  grid-column: 3 / 4;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.list__item .actions .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.favorite-btn {
+  color: var(--slate-400);
+}
+
+.favorite-btn.active {
+  color: var(--rose-500);
+}
+
+.favorite-btn.active svg {
+  fill: currentColor;
+}

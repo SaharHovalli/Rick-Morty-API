@@ -16,19 +16,26 @@ function App(){
   const saved = localStorage.getItem("favorites");
   return saved ? JSON.parse(saved) : [];
 });
+const [count,setCount]=useState(0);
 
 useEffect(() => {
+  const controller = new AbortController();
+  const signal = controller.signal;
+
   const timeout = setTimeout(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
 
         const { data } = await axios.get(
-          `https://rickandmortyapi.com/api/character/?name=${query}`
+          `https://rickandmortyapi.com/api/character/?name=${query}`,
+          { signal }
         );
 
         setCharacters(data.results);
       } catch (error) {
+        if (axios.isCancel(error)) return;
+
         if (error.response?.status === 404) {
           toast.error("No characters found!");
           setCharacters([]);
@@ -37,20 +44,31 @@ useEffect(() => {
           setCharacters([]);
         }
       } finally {
-        setIsLoading(false);
+        if (!signal.aborted) {
+          setIsLoading(false);
+        }
       }
     }
 
     fetchData();
   }, 500);
 
-  return () => clearTimeout(timeout);
+  return () => {
+    clearTimeout(timeout);
+    controller.abort();
+  };
 }, [query]);
 
 useEffect(() => {
   localStorage.setItem("favorites", JSON.stringify(favorites));
 }, [favorites]);
 
+useEffect(()=>{
+  const interval = setInterval(()=>setCount((c)=> c+1),1000)
+return ()=> {
+  clearInterval(interval)
+};
+},[count])
 
 const handleSelectCharacter =(id)=>{
   setSelectedId(prevId => prevId ===id ? null:id);
@@ -69,6 +87,7 @@ const isAddToFavorite=favorites.map((fav)=> fav.id).includes(SelectedId);
 
   return(
     <div className="app">
+      <div style={{color:"#fff"}}>{count}</div>
     <Toaster />
       <Navbar 
       NumOfResult={characters.length}
